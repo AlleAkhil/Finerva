@@ -18,5 +18,39 @@ class AppNavigator {
     return navigatorKey.currentState!.pop();
   }
 
-// Additional navigation methods can be added here
+  // Method to build the bottom navigation bar
+  static Widget buildBottomNavigationBar(int selectedIndex, ValueChanged<int> onTap) {
+    return BottomNavigationBar(
+      currentIndex: selectedIndex,
+      onTap: (index) {
+        if (index != selectedIndex) {
+          onTap(index);
+        }
+      },
+      items: const [
+        BottomNavigationBarItem(
+          icon: Icon(Icons.home),
+          label: '',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.search),
+          label: '',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.show_chart),
+          label: '',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.credit_card),
+          label: '',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.person),
+          label: '',
+        ),
+      ],
+      selectedItemColor: const Color(0xFF000000),
+      unselectedItemColor: const Color(0xFF647987),
+    );
+  }
 }

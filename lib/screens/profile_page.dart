@@ -12,27 +12,29 @@ class _ProfilePageState extends State<ProfilePage> {
   int _selectedIndex = 4; // Set the initial selected index for the profile tab
 
   void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+    if (index != _selectedIndex) {
+      setState(() {
+        _selectedIndex = index;
+      });
 
-    // Use AppNavigator for navigation
-    switch (index) {
-      case 0:
-        AppNavigator.navigateTo('/home');
-        break;
-      case 1:
-        AppNavigator.navigateTo('/search');
-        break;
-      case 2:
-        AppNavigator.navigateTo('/chart');
-        break;
-      case 3:
-        AppNavigator.navigateTo('/cards');
-        break;
-      case 4:
-      // We're already on the profile page, no need to navigate
-        break;
+      // Use AppNavigator for navigation
+      switch (index) {
+        case 0:
+          AppNavigator.navigateTo('/home');
+          break;
+        case 1:
+          AppNavigator.navigateTo('/plan');
+          break;
+        case 2:
+          AppNavigator.navigateTo('/chart');
+          break;
+        case 3:
+          AppNavigator.navigateTo('/cards');
+          break;
+        case 4:
+          AppNavigator.navigateTo('/profile'); // Redundant but ensures consistency
+          break;
+      }
     }
   }
 
@@ -40,123 +42,113 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Profile'),
+        title: const Text('Settings'),
         centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            AppNavigator.navigateTo('/home'); // Navigate to the home page when back icon is pressed
+          },
+        ),
       ),
-      backgroundColor: Colors.white,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Profile Image and User Name
-            const CircleAvatar(
-              radius: 50,
-              backgroundImage: AssetImage('assets/images/profile_picture.png'), // Replace with actual image path
-            ),
-            const SizedBox(height: 16),
-            const Text(
-              'Chris Johnson',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Color(0xFF111517),
-              ),
-            ),
-            const SizedBox(height: 8),
-            const Text(
-              'chris.johnson@example.com',
-              style: TextStyle(
-                fontSize: 16,
-                color: Color(0xFF647987),
-              ),
+            Row(
+              children: [
+                const CircleAvatar(
+                  radius: 40,
+                  backgroundImage: AssetImage('assets/images/profile_picture.png'), // Replace with actual image path
+                ),
+                const SizedBox(width: 16),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: const [
+                    Text(
+                      'Financial Overview',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF111517),
+                      ),
+                    ),
+                    SizedBox(height: 4),
+                    Text(
+                      '@financial_overview',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Color(0xFF647987),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
             const SizedBox(height: 32),
 
-            // Edit Profile Button
-            ElevatedButton(
-              onPressed: () {
-                // Navigate to Edit Profile screen
+            // Settings Options
+            ListTile(
+              leading: const Icon(Icons.attach_money, color: Color(0xFF111517)),
+              title: const Text('Expense Tracker'),
+              trailing: const Icon(Icons.arrow_forward_ios, color: Color(0xFF647987)),
+              onTap: () {
+                // Navigate to Expense Tracker
               },
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
-                ),
-                backgroundColor: Colors.blue[800],
-              ),
-              child: const Text(
-                'Edit Profile',
-                style: TextStyle(fontSize: 18, color: Colors.white),
-              ),
             ),
-            const SizedBox(height: 20),
-
-            // Settings Button
-            ElevatedButton(
-              onPressed: () {
-                // Navigate to Settings screen
+            ListTile(
+              leading: const Icon(Icons.savings, color: Color(0xFF111517)),
+              title: const Text('Savings Plan'),
+              trailing: const Icon(Icons.arrow_forward_ios, color: Color(0xFF647987)),
+              onTap: () {
+                // Navigate to Savings Plan
               },
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
-                ),
-                backgroundColor: Colors.blue[800],
-              ),
-              child: const Text(
-                'Settings',
-                style: TextStyle(fontSize: 18, color: Colors.white),
-              ),
             ),
-            const SizedBox(height: 20),
-
-            // Logout Button
-            ElevatedButton(
-              onPressed: () {
-                // Handle Logout
+            ListTile(
+              leading: const Icon(Icons.lock, color: Color(0xFF111517)),
+              title: const Text('Privacy'),
+              trailing: const Icon(Icons.arrow_forward_ios, color: Color(0xFF647987)),
+              onTap: () {
+                // Navigate to Privacy
               },
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
+            ),
+            ListTile(
+              leading: const Icon(Icons.help_outline, color: Color(0xFF111517)),
+              title: const Text('FAQs'),
+              trailing: const Icon(Icons.arrow_forward_ios, color: Color(0xFF647987)),
+              onTap: () {
+                // Navigate to FAQs
+              },
+            ),
+            const Spacer(),
+            // Sign out button
+            Center(
+              child: TextButton(
+                onPressed: () {
+                  // Handle Sign Out
+                },
+                style: TextButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  backgroundColor: Colors.grey[300],
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
                 ),
-                backgroundColor: Colors.redAccent,
-              ),
-              child: const Text(
-                'Logout',
-                style: TextStyle(fontSize: 18, color: Colors.white),
+                child: const Text(
+                  'Sign out',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Color(0xFF111517),
+                  ),
+                ),
               ),
             ),
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home, color: Color(0xFF111517)),
-            label: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.search, color: Color(0xFF647987)),
-            label: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.show_chart, color: Color(0xFF647987)),
-            label: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.credit_card, color: Color(0xFF647987)),
-            label: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person, color: Color(0xFF111517)),
-            label: '',
-          ),
-        ],
-        selectedItemColor: const Color(0xFF1d8cd7),
-      ),
+      bottomNavigationBar: AppNavigator.buildBottomNavigationBar(_selectedIndex, _onItemTapped),
     );
   }
 }

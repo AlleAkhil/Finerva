@@ -1,12 +1,17 @@
+import 'package:finerva/screens/create_plans.dart';
+import 'package:finerva/screens/plans_page.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'screens/pre_login.dart';
 import 'screens/login_page.dart';
 import 'screens/home_page.dart';
+import 'screens/stats_page.dart';
+import 'screens/cards_page.dart';
 import 'screens/profile_page.dart'; // Import the ProfilePage
 import 'app_navigator.dart'; // Import the AppNavigator
 
-void main() {
-  runApp(const MyApp());
+void main(){
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -26,6 +31,10 @@ class MyApp extends StatelessWidget {
         '/': (context) => const PreLoginScreen(), // PreLoginScreen as the start
         '/login': (context) => const LoginScreen(), // Define the login route
         '/home': (context) => const HomePage(), // Home Page route
+        '/plan': (context) => const PlanPage(),
+        '/create-plan': (context) => const CreatePlanPage(),
+        '/chart': (context) => const StatsPage(),
+        '/cards': (context) => const CardsPage(),
         '/profile': (context) => const ProfilePage(), // Profile Page route
         // Add other routes as needed (e.g., signup screen)
       },
