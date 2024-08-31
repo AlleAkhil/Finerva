@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import '../app_navigator.dart'; // Import the AppNavigator
+import 'package:provider/provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import '../app_navigator.dart';
+import '../backend/schema/user_model.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -10,6 +13,23 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    // Schedule the _loadUserData function to run after the first frame
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadUserData();
+    });
+  }
+
+  void _loadUserData() {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      // Set the user in the UserModel provider
+      Provider.of<UserModel>(context, listen: false).setUser(user);
+    }
+  }
 
   void _onItemTapped(int index) {
     setState(() {
@@ -38,6 +58,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final userModel = Provider.of<UserModel>(context);  // Access UserModel from Provider
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -49,9 +71,9 @@ class _HomePageState extends State<HomePage> {
             Scaffold.of(context).openDrawer(); // Open the side navigation bar
           },
         ),
-        title: const Text(
-          'Hello, Akhil', // Display the username here
-          style: TextStyle(
+        title: Text(
+          'Hello, ${userModel.name ?? 'User'}', // Display the username from UserModel
+          style: const TextStyle(
             color: Color(0xFF111517),
             fontSize: 18,
             fontWeight: FontWeight.bold,
@@ -60,7 +82,10 @@ class _HomePageState extends State<HomePage> {
         iconTheme: const IconThemeData(color: Color(0xFF111517)),
         actions: [
           CircleAvatar(
-            backgroundImage: AssetImage('assets/images/profile_picture.png'),
+            backgroundImage: userModel.photoUrl != null
+                ? NetworkImage(userModel.photoUrl!)
+                : const AssetImage('lib/assets/images/default_avatar.png')
+            as ImageProvider,
           ),
         ],
       ),
@@ -71,7 +96,6 @@ class _HomePageState extends State<HomePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Welcome Message
               const Text(
                 'Welcome to Finerva!',
                 style: TextStyle(
@@ -81,7 +105,6 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               const SizedBox(height: 16),
-              // Net Worth Card
               Container(
                 padding: const EdgeInsets.all(16.0),
                 decoration: BoxDecoration(
@@ -136,7 +159,6 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               const SizedBox(height: 20),
-              // Earnings and Outgoings
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -148,7 +170,7 @@ class _HomePageState extends State<HomePage> {
                       color: Colors.grey[200]!,
                     ),
                   ),
-                  const SizedBox(width: 16), // Spacer between the two containers
+                  const SizedBox(width: 16),
                   Expanded(
                     child: _buildEarningsOutgoingsCard(
                       icon: Icons.arrow_downward,
@@ -160,7 +182,6 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
               const SizedBox(height: 20),
-              // Targets and Financial Sections
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -181,7 +202,6 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
               const SizedBox(height: 20),
-              // Savings Progress and Recent Transactions Sections
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -205,20 +225,26 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
-      bottomNavigationBar: AppNavigator.buildBottomNavigationBar(_selectedIndex, _onItemTapped),
+      bottomNavigationBar: AppNavigator.buildBottomNavigationBar(
+          _selectedIndex, _onItemTapped),
     );
   }
 
   Widget _buildDrawer(BuildContext context) {
+    final userModel = Provider.of<UserModel>(context);
+
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
           UserAccountsDrawerHeader(
-            accountName: Text("Akhil"), // Set the username here
-            accountEmail: Text("akhil@example.com"),
+            accountName: Text(userModel.name ?? "User"), // Set the username here
+            accountEmail: Text(userModel.email ?? ""),
             currentAccountPicture: CircleAvatar(
-              backgroundImage: AssetImage('assets/images/profile_picture.png'),
+              backgroundImage: userModel.photoUrl != null
+                  ? NetworkImage(userModel.photoUrl!)
+                  : const AssetImage('assets/images/default_avatar.png')
+              as ImageProvider,
             ),
             decoration: BoxDecoration(
               color: Colors.grey[800],
@@ -242,7 +268,9 @@ class _HomePageState extends State<HomePage> {
             leading: Icon(Icons.logout),
             title: Text('Logout'),
             onTap: () {
-              // Handle logout
+              FirebaseAuth.instance.signOut().then((value) {
+                AppNavigator.navigateTo('/login');
+              });
             },
           ),
         ],

@@ -1,10 +1,57 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import '../services/auth_services.dart';
 import 'home_page.dart';  // Import the HomePage
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
+
+  @override
+  _LoginScreenState createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final AuthService _authService = AuthService();
+
+  void _signInWithEmailPassword() async {
+    try {
+      final user = await _authService.signInWithEmailPassword(
+        _emailController.text,
+        _passwordController.text,
+      );
+      if (user != null) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const HomePage()),
+        );
+      }
+    } catch (e) {
+      // Show error message if sign in fails
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.toString())),
+      );
+    }
+  }
+
+  void _signInWithGoogle() async {
+    try {
+      final user = await _authService.signInWithGoogle();
+      if (user != null) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const HomePage()),
+        );
+      }
+    } catch (e) {
+      // Show error message if sign in fails
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.toString())),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +76,7 @@ class LoginScreen extends StatelessWidget {
                   children: [
                     // Email TextField
                     TextField(
+                      controller: _emailController,
                       decoration: InputDecoration(
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(30),
@@ -41,6 +89,7 @@ class LoginScreen extends StatelessWidget {
                     const SizedBox(height: 20),
                     // Password TextField
                     TextField(
+                      controller: _passwordController,
                       obscureText: true,
                       decoration: InputDecoration(
                         border: OutlineInputBorder(
@@ -56,13 +105,7 @@ class LoginScreen extends StatelessWidget {
                     SizedBox(
                       width: double.infinity,  // Set the button width to match the container width
                       child: ElevatedButton(
-                        onPressed: () {
-                          // Navigate to HomePage when sign-in is successful
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(builder: (context) => const HomePage()),
-                          );
-                        },
+                        onPressed: _signInWithEmailPassword,
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 15),
                           shape: RoundedRectangleBorder(
@@ -104,9 +147,7 @@ class LoginScreen extends StatelessWidget {
                         child: SignInButton(
                           Buttons.Google,
                           text: '',  // Remove text, only show the icon
-                          onPressed: () {
-                            // Handle Google Sign-In
-                          },
+                          onPressed: _signInWithGoogle,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(30),
                           ),
