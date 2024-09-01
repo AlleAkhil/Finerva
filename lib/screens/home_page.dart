@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../app_navigator.dart';
 import '../backend/schema/user_model.dart';
 
@@ -23,42 +24,41 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  void _loadUserData() {
-    final user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      // Set the user in the UserModel provider
-      Provider.of<UserModel>(context, listen: false).setUser(user);
-    }
+  Future<void> _loadUserData() async {
+    await Provider.of<UserModel>(context, listen: false).fetchUserDataFromFirestore();
   }
 
   void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+    if (index != _selectedIndex) {
+      setState(() {
+        _selectedIndex = index;
+      });
 
-    // Use AppNavigator for navigation
-    switch (index) {
-      case 0:
-        AppNavigator.navigateTo('/home');
-        break;
-      case 1:
-        AppNavigator.navigateTo('/plan');
-        break;
-      case 2:
-        AppNavigator.navigateTo('/chart');
-        break;
-      case 3:
-        AppNavigator.navigateTo('/cards');
-        break;
-      case 4:
-        AppNavigator.navigateTo('/profile');
-        break;
+      // Use AppNavigator for navigation
+      switch (index) {
+        case 0:
+          AppNavigator.navigateTo('/home');
+          break;
+        case 1:
+          AppNavigator.navigateTo('/plan');
+          break;
+        case 2:
+          AppNavigator.navigateTo('/chart');
+          break;
+        case 3:
+          AppNavigator.navigateTo('/cards');
+          break;
+        case 4:
+          AppNavigator.navigateTo('/profile');
+          break;
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final userModel = Provider.of<UserModel>(context);  // Access UserModel from Provider
+    final userName = userModel.name ?? 'User';  // Fetched name or fallback
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -72,7 +72,7 @@ class _HomePageState extends State<HomePage> {
           },
         ),
         title: Text(
-          'Hello, ${userModel.name ?? 'User'}', // Display the username from UserModel
+          'Hello, $userName', // Display the username from UserModel
           style: const TextStyle(
             color: Color(0xFF111517),
             fontSize: 18,
@@ -82,7 +82,7 @@ class _HomePageState extends State<HomePage> {
         iconTheme: const IconThemeData(color: Color(0xFF111517)),
         actions: [
           CircleAvatar(
-            backgroundImage: userModel.photoUrl != null
+            backgroundImage: userModel.photoUrl != null && userModel.photoUrl!.isNotEmpty
                 ? NetworkImage(userModel.photoUrl!)
                 : const AssetImage('lib/assets/images/default_avatar.png')
             as ImageProvider,
@@ -241,7 +241,7 @@ class _HomePageState extends State<HomePage> {
             accountName: Text(userModel.name ?? "User"), // Set the username here
             accountEmail: Text(userModel.email ?? ""),
             currentAccountPicture: CircleAvatar(
-              backgroundImage: userModel.photoUrl != null
+              backgroundImage: userModel.photoUrl != null && userModel.photoUrl!.isNotEmpty
                   ? NetworkImage(userModel.photoUrl!)
                   : const AssetImage('assets/images/default_avatar.png')
               as ImageProvider,

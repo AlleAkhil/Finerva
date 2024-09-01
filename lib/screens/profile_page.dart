@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
-import '../app_navigator.dart'; // Import the AppNavigator
-import '../backend/schema/user_model.dart'; // Import the UserModel
+import '../app_navigator.dart';
+import '../backend/schema/user_model.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -12,7 +12,17 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  int _selectedIndex = 4; // Set the initial selected index for the profile tab
+  int _selectedIndex = 4;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUserData(); // Fetch user data from Firestore on page load
+  }
+
+  void _fetchUserData() async {
+    await Provider.of<UserModel>(context, listen: false).fetchUserDataFromFirestore();
+  }
 
   void _onItemTapped(int index) {
     if (index != _selectedIndex) {
@@ -20,7 +30,6 @@ class _ProfilePageState extends State<ProfilePage> {
         _selectedIndex = index;
       });
 
-      // Use AppNavigator for navigation
       switch (index) {
         case 0:
           AppNavigator.navigateTo('/home');
@@ -35,43 +44,37 @@ class _ProfilePageState extends State<ProfilePage> {
           AppNavigator.navigateTo('/cards');
           break;
         case 4:
-          AppNavigator.navigateTo('/profile'); // Redundant but ensures consistency
+          AppNavigator.navigateTo('/profile');
           break;
       }
     }
   }
 
   Future<bool> _onWillPop() async {
-    // Disable the back button functionality
     return false;
   }
 
   void _signOut() async {
-    // Sign out the user
     await FirebaseAuth.instance.signOut();
-
-    // Navigate to the login screen
     Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
   }
 
   @override
   Widget build(BuildContext context) {
-    // Assuming UserModel has individual getters for name, photoUrl, etc.
     final userModel = Provider.of<UserModel>(context);
     final userName = userModel.name ?? 'User';
-    final userEmail = userModel.email ?? '';
+    final userEmail = userModel.email ?? 'No email available';
     final userPhotoUrl = userModel.photoUrl;
 
     return WillPopScope(
-      onWillPop: _onWillPop, // Disable back button
+      onWillPop: _onWillPop,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Settings'),
+          title: const Text('Profile'),
           centerTitle: true,
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
             onPressed: () {
-              // Prevent back navigation after sign out
               AppNavigator.navigateTo('/home');
             },
           ),
@@ -81,7 +84,7 @@ class _ProfilePageState extends State<ProfilePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Profile Image and User Name
+              // Profile Image and User Details
               Row(
                 children: [
                   CircleAvatar(
@@ -154,9 +157,9 @@ class _ProfilePageState extends State<ProfilePage> {
               // Sign out button
               Center(
                 child: SizedBox(
-                  width: double.infinity, // Make the button fill the width of the screen
+                  width: double.infinity,
                   child: TextButton(
-                    onPressed: _signOut, // Implement sign-out functionality
+                    onPressed: _signOut,
                     style: TextButton.styleFrom(
                       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                       backgroundColor: Colors.grey[300],

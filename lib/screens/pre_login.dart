@@ -54,7 +54,7 @@ class PreLoginScreen extends StatelessWidget {
                   width: double.infinity, // Make the button fill the width
                   child: ElevatedButton(
                     onPressed: () {
-                      // Navigate to signup screen
+                      Navigator.pushNamed(context, '/signup');// Navigate to signup screen
                     },
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 15),
