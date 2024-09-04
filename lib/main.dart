@@ -13,6 +13,8 @@ import 'screens/home_page.dart';
 import 'screens/stats_page.dart';
 import 'screens/cards_page.dart';
 import 'screens/profile_page.dart';
+import 'screens/plans_page.dart';
+
 import 'app_navigator.dart';
 
 void main() async {
