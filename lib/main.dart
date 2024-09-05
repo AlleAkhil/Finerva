@@ -1,3 +1,4 @@
+import 'package:finerva/screens/create_expenses.dart';
 import 'package:finerva/screens/create_plans.dart';
 import 'package:finerva/screens/plans_page.dart';
 import 'package:finerva/screens/signup_page.dart';
@@ -10,8 +11,8 @@ import 'firebase_options.dart';
 import 'screens/pre_login.dart';
 import 'screens/login_page.dart';
 import 'screens/home_page.dart';
+import 'screens/expenses_page.dart';
 import 'screens/stats_page.dart';
-import 'screens/cards_page.dart';
 import 'screens/profile_page.dart';
 import 'screens/plans_page.dart';
 
@@ -53,8 +54,9 @@ class MyApp extends StatelessWidget {
         '/home': (context) => const HomePage(),
         '/plan': (context) => const PlanPage(),
         '/create-plan': (context) => const CreatePlanPage(),
-        '/chart': (context) => const StatsPage(),
-        '/cards': (context) => const CardsPage(),
+        '/stats': (context) => const StatsPage(),
+        '/expenses': (context) => const ExpensesPage(),
+        '/create-expense': (context) => const CreateExpensePage(),
         '/profile': (context) => const ProfilePage(),
       },
       onUnknownRoute: (settings) {

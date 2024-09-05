@@ -5,7 +5,6 @@ class AppNavigator {
   static final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
   // Define navigation methods
-
   static Future<dynamic> navigateTo(String routeName, {Object? arguments}) {
     return navigatorKey.currentState!.pushNamed(routeName, arguments: arguments);
   }
@@ -29,23 +28,23 @@ class AppNavigator {
       },
       items: const [
         BottomNavigationBarItem(
-          icon: Icon(Icons.home),
+          icon: Icon(Icons.home),    // Home icon for home page
           label: '',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.search),
+          icon: Icon(Icons.search),  // Search icon for search functionality
           label: '',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.show_chart),
+          icon: Icon(Icons.attach_money),  // New icon for expenses page
           label: '',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.credit_card),
+          icon: Icon(Icons.pie_chart),  // Chart icon for statistics
           label: '',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.person),
+          icon: Icon(Icons.person),  // Profile icon for user profile
           label: '',
         ),
       ],

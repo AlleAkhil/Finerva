@@ -43,10 +43,10 @@ class _HomePageState extends State<HomePage> {
           AppNavigator.navigateTo('/plan');
           break;
         case 2:
-          AppNavigator.navigateTo('/chart');
+          AppNavigator.navigateTo('/expenses');
           break;
         case 3:
-          AppNavigator.navigateTo('/cards');
+          AppNavigator.navigateTo('/stats');
           break;
         case 4:
           AppNavigator.navigateTo('/profile');

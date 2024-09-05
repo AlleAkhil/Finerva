@@ -46,10 +46,10 @@ class _PlanPageState extends State<PlanPage> {
           AppNavigator.navigateAndReplace('/plan');
           break;
         case 2:
-          AppNavigator.navigateAndReplace('/chart');
+          AppNavigator.navigateAndReplace('/expenses');
           break;
         case 3:
-          AppNavigator.navigateAndReplace('/cards');
+          AppNavigator.navigateAndReplace('/stats');
           break;
         case 4:
           AppNavigator.navigateAndReplace('/profile');
